@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веселый Паровозик - Детский развивающий центр</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* --- Design system / palette --- */
+        :root{
+            /* primary brand colors (updated to purple-pink theme) */
+            --primary: #6D28D9; /* deep violet */
+            --accent: #F472B6; /* pink accent for buttons */
+
+            /* neutrals */
+            --bg: #F7FAFC; /* page background */
+            --surface: #FFFFFF; /* card / surface */
+            --text: #0F172A; /* main text dark */
+            --muted: #64748B; /* secondary text */
+
+            /* hero background: purple -> pink gradient */
+            --hero-top: #6D28D9; /* violet */
+            --hero-bottom: #FB7185; /* warm pink */
+
+            /* utility */
+            --white: #FFFFFF;
+            --radius: 12px;
+        }
+
+        /* --- Typography --- */
+        html,body{ height:100%; }
+        body{
+            margin:0; font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, Arial; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+        }
+        h1,h2,h3,h4,h5{ font-family: 'Baloo 2', 'Nunito', cursive; color:var(--text); margin:0; }
+        h2{ font-size:1.6rem; }
+
+        /* --- Layout helpers --- */
+        .container{ width: min(1100px, 94%); margin: 0 auto; }
+
+    header.header{ background: var(--white); padding: 12px 0; box-shadow: 0 6px 20px rgba(15,23,42,0.06); position: relative; z-index: 40; }
+    .header-content{ display:flex; align-items:center; gap:18px; }
+    .logo h1{ margin:0; font-size:1.3rem; color:var(--primary); font-weight:700; }
+    .train-logo{ font-size:26px; margin-right:8px; }
+
+    /* navigation aligned to the right */
+    .nav{ margin-left:auto; }
+    .mobile-menu-btn{ display:none; background:transparent; border:0; font-size:20px; cursor:pointer; color:var(--text); }
+        .nav ul{ list-style:none; display:flex; gap:18px; margin:0; padding:0; align-items:center; }
+    .nav a.nav-link{ color: #0F172A; text-decoration:none; padding:8px 10px; border-radius:8px; transition: color .12s ease, background .12s ease; }
+    .nav a.nav-link:hover{ color:var(--primary); background: rgba(13,8,34,0.03); }
+
+        /* --- Hero (full-screen) --- */
+        .hero{ height:100vh; min-height:460px; display:flex; align-items:center; background: linear-gradient(160deg, var(--hero-top) 0%, var(--hero-bottom) 100%); color:var(--white); }
+        .hero .hero-content{ display:flex; align-items:center; gap:28px; width:100%; box-sizing:border-box; padding: 0 4px; }
+    /* Ensure hero container fills space and centers its content vertically */
+    .hero .container{ height:100%; display:flex; align-items:center; }
+        .hero .hero-text{ max-width:720px; text-shadow: 0 6px 18px rgba(2,6,23,0.45); margin-top: -8px; }
+        .hero h2{ font-size:1.35rem; color: rgba(255,255,255,0.95); }
+    .hero h3{ font-size:2.6rem; letter-spacing:0.6px; margin-top:2px; color: var(--white); line-height:1.02; }
+        .hero p{ color: rgba(255,255,255,0.92); margin-top:6px; }
+
+    .hero .hero-image{ flex:0 0 380px; display:flex; align-items:center; justify-content:center; margin-top: -12px; }
+    .cute-train{ font-size:260px; transform:translateX(120%); opacity:0; animation: train-in 240ms cubic-bezier(.22,.9,.31,1) 0ms both; text-shadow:0 10px 28px rgba(0,0,0,0.5); }
+    .cute-train.animation-end{ transform: translateX(6%); }
+    @keyframes train-in{ from{ transform:translateX(120%); opacity:0 } 70%{ transform:translateX(-4%); opacity:1 } to{ transform:translateX(6%); opacity:1 } }
+    .hero .hero-text{ opacity:0; transform:translateX(18%); animation:text-in 220ms ease-out 80ms both; }
+        @keyframes text-in{ from{ transform:translateX(18%); opacity:0 } to{ transform:translateX(0); opacity:1 } }
+
+        /* Quick appearance animations for Contact section */
+        @keyframes contact-fade-up {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* apply to individual contact items, form and map */
+        .contact-info .contact-item,
+        .contact-form-container,
+        .map-container {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: contact-fade-up 220ms ease-out both;
+        }
+
+        /* small stagger: faster appearance — delays in 60ms steps */
+    .contact-info .contact-item:nth-child(1){ animation-delay: 20ms; }
+    .contact-info .contact-item:nth-child(2){ animation-delay: 60ms; }
+    .contact-info .contact-item:nth-child(3){ animation-delay: 100ms; }
+    .contact-info .contact-item:nth-child(4){ animation-delay: 140ms; }
+    .contact-info .contact-item:nth-child(5){ animation-delay: 180ms; }
+    .contact-info .contact-item:nth-child(6){ animation-delay: 220ms; }
+    .contact-form-container{ animation-delay: 60ms; }
+    .map-container{ animation-delay: 120ms; }
+
+        /* --- Buttons (global) --- */
+    .btn{ display:inline-block; padding:0.6rem 1rem; border-radius:10px; font-weight:700; text-decoration:none; cursor:pointer; }
+    /* Primary buttons: unified violet->pink gradient */
+    .btn-primary{ background: linear-gradient(90deg, var(--primary), var(--accent)); color:var(--white); border: none; box-shadow: 0 10px 30px rgba(109,40,217,0.12); }
+    .btn-primary:hover{ transform:translateY(-2px); filter:brightness(1.03); }
+    /* Outline buttons: subtle bordered style that works on light surfaces */
+    .btn-outline{ background: transparent; color: var(--primary); border: 2px solid rgba(244,114,182,0.18); }
+    .btn-outline:hover{ background: rgba(109,40,217,0.04); color: var(--primary); }
+
+    /* Hero-specific button tweaks to keep soft glass look on gradient */
+    .hero .btn-primary{ background: linear-gradient(90deg, var(--primary), var(--accent)); box-shadow: 0 10px 34px rgba(109,40,217,0.16); }
+    /* On hero the outline should be light/white to remain visible over gradient */
+    /* Slightly lighter background for better visibility of the "Записаться" button */
+    .hero .btn-outline{ color: var(--white); border-color: rgba(255,255,255,0.30); background: rgba(255,255,255,0.10); }
+
+        /* --- Sections and cards */
+        section{ padding: 56px 0; }
+        .section-header{ text-align:center; margin-bottom:40px; }
+        .section-header h2{ margin:0 0 12px; color:var(--primary); font-size:2.2rem; font-weight:700; }
+        .section-header p{ color:var(--muted); font-size:1.1rem; max-width:600px; margin:0 auto; line-height:1.6; }
+        
+        /* Enhanced age groups layout */
+        .age-groups{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; margin-top:40px; }
+        .age-card{ background:var(--surface); border-radius:16px; padding:24px; box-shadow: 0 8px 32px rgba(15,23,42,0.08); transition: transform 0.2s ease, box-shadow 0.2s ease; position:relative; overflow:hidden; }
+        .age-card:hover{ transform:translateY(-4px); box-shadow: 0 12px 40px rgba(15,23,42,0.12); }
+        .age-badge{ background:linear-gradient(135deg, var(--primary), var(--accent)); color:var(--white); padding:8px 16px; border-radius:20px; font-size:0.85rem; font-weight:600; margin-bottom:16px; display:inline-block; }
+        .age-card h3{ color:var(--text); margin:0 0 16px; font-size:1.4rem; }
+        .program-list{ list-style:none; padding:0; margin:0; }
+        .program-list li{ padding:8px 0; color:var(--text); display:flex; align-items:center; gap:10px; }
+        .program-list li i{ color:var(--primary); font-size:0.9rem; }
+        .feature-card, .teacher-card{ background:var(--surface); border-radius:12px; padding:18px; box-shadow: 0 6px 18px rgba(15,23,42,0.04); }
+
+    /* Footer - compact, concise */
+    /* Сделали фон footer таким же градиентом, как у hero, и сделали текст белым */
+    .footer{ background: linear-gradient(160deg, var(--hero-top) 0%, var(--hero-bottom) 100%); color:var(--white); padding:16px 0; font-size:0.95rem; }
+    .footer .container{ display:flex; align-items:center; justify-content:space-between; gap:18px; }
+    .footer .footer-content{ display:flex; gap:22px; flex-wrap:wrap; align-items:center; justify-content:space-between; width:100%; }
+    .footer .footer-section{ flex:1 1 180px; min-width:140px; padding:6px 8px; }
+    .footer .footer-section h4{ margin:0 0 6px; font-size:0.95rem; color: rgba(255,255,255,0.95); }
+    .footer .footer-section p, .footer .footer-section ul, .footer .footer-section a{ margin:0; color: rgba(255,255,255,0.92); font-size:0.9rem; }
+    .footer .footer-section ul{ padding-left:0; list-style:none; }
+    .footer .footer-social a{ margin-right:8px; display:inline-block; background:transparent; color:var(--white); text-decoration:none; padding:6px; border-radius:6px; }
+    .footer .logo .train-logo{ font-size:20px; }
+
+    .footer-bottom{ text-align:center; margin-top:12px; font-size:0.92rem; color: var(--text); background: var(--white); padding:14px 12px; border-radius:8px; font-weight:600; box-shadow: 0 4px 18px rgba(2,6,23,0.06); }
+
+        /* Responsive tweaks */
+    @media (max-width:1100px){ .hero .hero-image{ flex-basis:320px } }
+    @media (max-width:900px){ .hero .hero-content{ gap:18px } .cute-train{ font-size:200px } }
+
+    @media (max-width:700px){
+        /* Mobile layout: stack content and simplify spacing */
+        .mobile-menu-btn{ display:block; }
+        .nav{ display:none; position:absolute; left:12px; right:12px; top:64px; background:var(--white); border-radius:10px; padding:10px; box-shadow:0 8px 30px rgba(2,6,23,0.08); }
+        .nav.open{ display:block; }
+        .nav ul{ flex-direction:column; gap:10px; }
+        .header-content{ gap:10px; }
+        .hero{ height:auto; min-height:420px; padding:28px 0; }
+        .hero .hero-content{ flex-direction:column-reverse; text-align:center; gap:14px; }
+        .hero .hero-image{ margin-bottom:6px; margin-top:0; }
+        .cute-train{ font-size:140px; }
+        .hero h3{ font-size:1.4rem; }
+        .hero .hero-text{ padding:0 8px; }
+        .hero-buttons .btn{ display:block; width:100%; margin:8px 0; }
+
+        /* Make card grids single column on mobile */
+        .age-groups{ grid-template-columns: 1fr !important; gap:16px !important; }
+        .features-grid, .teachers-grid, .gallery-grid{ grid-template-columns: 1fr !important; }
+        .section-header h2{ font-size:1.8rem !important; }
+        .section-header p{ font-size:1rem !important; }
+
+        /* Forms and contact: single column */
+        .contact-form-section{ grid-template-columns: 1fr !important; }
+        .contact-form-container .contact-form input, .contact-form-container .contact-form select, .contact-form-container .contact-form textarea{ font-size:1rem; }
+
+        /* Footer stack */
+        .footer .footer-content{ flex-direction:column; gap:12px; align-items:center; text-align:center; }
+        .footer .footer-section{ min-width: auto; }
+        .footer-bottom{ border-radius:0; margin-top:14px; }
+
+        /* Reduce paddings globally for mobile */
+        section{ padding: 28px 0; }
+    }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce){ .cute-train, .hero .hero-text{ animation:none !important; transform:none !important; opacity:1 !important } }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="train-logo">
+                        🚂
+                    </div>
+                    <h1>Веселый Паровозик</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="#home" class="nav-link active">Главная</a></li>
+                        <li><a href="#programs" class="nav-link">Программы</a></li>
+                        <li><a href="#teachers" class="nav-link">Педагоги</a></li>
+                        <li><a href="#schedule" class="nav-link">Расписание</a></li>
+                        <li><a href="#gallery" class="nav-link">Галерея</a></li>
+                        <li><a href="#contact" class="nav-link">Контакты</a></li>
+                    </ul>
+                </nav>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2>Клуб для детей и родителей</h2>
+                    <h3>ВЕСЕЛЫЙ ПАРОВОЗИК</h3>
+                    <p>Развиваем детей с 6 месяцев до 7 лет в уютной и дружелюбной атмосфере</p>
+                    <div class="hero-buttons">
+                        <a href="#programs" class="btn btn-primary">Наши программы</a>
+                        <a href="#contact" class="btn btn-outline">Записаться</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="cute-train">🚂</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="programs">
+        <div class="container">
+            <div class="section-header">
+                <h2>Программы по возрастам</h2>
+                <p>Мы создали специальные программы для каждого возраста</p>
+            </div>
+            <div class="age-groups">
+                <!-- 6 мес - 2 года -->
+                <div class="age-group">
+                    <div class="age-card">
+                        <div class="age-badge">6 мес - 2 года</div>
+                        <h3>Раннее развитие</h3>
+                        <ul class="program-list">
+                            <li><i class="fas fa-check"></i> Развивающие занятия</li>
+                            <li><i class="fas fa-check"></i> Сенсорное развитие</li>
+                            <li><i class="fas fa-check"></i> Музыкальные занятия</li>
+                            <li><i class="fas fa-check"></i> Развитие речи</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 2 года - 3 года -->
+                <div class="age-group">
+                    <div class="age-card">
+                        <div class="age-badge">2 года - 3 года</div>
+                        <h3>Адаптация и развитие</h3>
+                        <ul class="program-list">
+                            <li><i class="fas fa-check"></i> Развивающие занятия</li>
+                            <li><i class="fas fa-check"></i> Адаптационная группа</li>
+                            <li><i class="fas fa-check"></i> Песочная терапия</li>
+                            <li><i class="fas fa-check"></i> Ритмика</li>
+                            <li><i class="fas fa-check"></i> Студия рисования и лепки</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3 года - 4 года -->
+                <div class="age-group">
+                    <div class="age-card">
+                        <div class="age-badge">3 года - 4 года</div>
+                        <h3>Дошкольное развитие</h3>
+                        <ul class="program-list">
+                            <li><i class="fas fa-check"></i> "Азбука малышка"</li>
+                            <li><i class="fas fa-check"></i> Песочная терапия</li>
+                            <li><i class="fas fa-check"></i> Ритмика</li>
+                            <li><i class="fas fa-check"></i> Лечебная физкультура</li>
+                            <li><i class="fas fa-check"></i> Английский язык</li>
+                            <li><i class="fas fa-check"></i> Логопедическая группа</li>
+                            <li><i class="fas fa-check"></i> Студия рисования и лепки</li>
+                            <li><i class="fas fa-check"></i> Кратковременное пребывание</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 4 года - 7 лет -->
+                <div class="age-group">
+                    <div class="age-card">
+                        <div class="age-badge">4 года - 7 лет</div>
+                        <h3>Подготовка к школе</h3>
+                        <ul class="program-list">
+                            <li><i class="fas fa-check"></i> Подготовка к школе</li>
+                            <li><i class="fas fa-check"></i> Музыкальный театр</li>
+                            <li><i class="fas fa-check"></i> Хореография</li>
+                            <li><i class="fas fa-check"></i> Английский язык</li>
+                            <li><i class="fas fa-check"></i> Творческая мастерская</li>
+                            <li><i class="fas fa-check"></i> Песочная терапия</li>
+                            <li><i class="fas fa-check"></i> Робототехника</li>
+                            <li><i class="fas fa-check"></i> Занимательная математика</li>
+                            <li><i class="fas fa-check"></i> ЛФК на фитболах</li>
+                            <li><i class="fas fa-check"></i> Индивидуальные занятия с логопедом</li>
+                            <li><i class="fas fa-check"></i> Кёкусинкай каратэ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>Любовь к детям</h4>
+                    <p>Наши педагоги работают с любовью и заботой о каждом ребенке</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4>Опытные педагоги</h4>
+                    <p>Высококвалифицированные специалисты с большим опытом работы</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h4>Индивидуальный подход</h4>
+                    <p>Учитываем особенности и потребности каждого ребенка</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>Для детей и родителей</h4>
+                    <p>Совместные занятия укрепляют связь между детьми и родителями</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teachers Section -->
+    <section id="teachers" class="teachers">
+        <div class="container">
+            <div class="section-header">
+                <h2>Наши педагоги</h2>
+                <p>Профессиональная команда экспертов в области детского развития</p>
+            </div>
+            <div class="teachers-grid">
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            👩‍🎓
+                        </div>
+                    </div>
+                    <h4>Демидова Юлия Михайловна</h4>
+                    <p class="teacher-title">Педагог-психолог, специалист раннего развития</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>🎯 Направления работы:</h5>
+                                <ul>
+                                    <li>• Организатор клуба</li>
+                                    <li>• Педагог раннего развития</li>
+                                    <li>• Развивающие занятия с детьми от 6 мес до 3 лет</li>
+                                    <li>• Развитие внимания, памяти, мышления на буквенном материале</li>
+                                    <li>• "Азбука малышка"</li>
+                                    <li>• Психологическое консультирование</li>
+                                    <li>• Песочная терапия</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> Педагог-психолог, специалист раннего развития. Высшая квалификационная категория. Высшее образование. Окончила РГПУ имени А.И. Герцена.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            👩‍🏫
+                        </div>
+                    </div>
+                    <h4>Берёзко Наталья Юрьевна</h4>
+                    <p class="teacher-title">Преподаватель английского языка</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>🌍 Направления работы:</h5>
+                                <ul>
+                                    <li>• Английский язык от 3 лет</li>
+                                    <li>• Игровые методики изучения языка</li>
+                                    <li>• Развитие разговорной речи</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> РГПУ имени А.И.Герцена, факультет начального образования (Институт детства). Специальности - учитель английского языка, учитель начальных классов. Педагогический стаж: 13 лет.</p>
+                            <p class="teacher-about">💝 <strong>О себе:</strong> Люблю ходить в театр, кино. Очень люблю путешествовать. Люблю английский язык во всех проявлениях (книги, кино, общение).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            🎭
+                        </div>
+                    </div>
+                    <h4>Ольнева Алла Валерьевна</h4>
+                    <p class="teacher-title">Педагог-психолог, музыкальный руководитель</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>🎵 Направления работы:</h5>
+                                <ul>
+                                    <li>• Песочная терапия</li>
+                                    <li>• Ритмика для детей 2-3 лет</li>
+                                    <li>• Музыкальный театр</li>
+                                    <li>• Развитие музыкального слуха</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> Высшее. Санкт-Петербургский государственный университет культуры и искусств, факультет культуры семьи и детства. Высшая квалификационная категория. Аспирантка СПБГУ. Педагогический стаж: опыт преподавания - 14 лет.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            🗣️
+                        </div>
+                    </div>
+                    <h4>Репета Екатерина Дмитриевна</h4>
+                    <p class="teacher-title">Логопед</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>💬 Направления работы:</h5>
+                                <ul>
+                                    <li>• Развитие фонематического восприятия</li>
+                                    <li>• Профилактика дизграфии, дизлексии</li>
+                                    <li>• Индивидуальные и подгрупповые коррекционные занятия</li>
+                                    <li>• Всестороннее развитие ребенка</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> Высшее. В 2000 году закончила Российский Государственный педагогический университет им. И. А. Герцена по специальности тифлопедагогика с присуждением квалификации учитель-тифлопедагог.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            👶
+                        </div>
+                    </div>
+                    <h4>Томашева Елена Игоревна</h4>
+                    <p class="teacher-title">Воспитатель группы кратковременного пребывания</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>🍼 Направления работы:</h5>
+                                <ul>
+                                    <li>• Педагог раннего развития</li>
+                                    <li>• Развивающие занятия с детьми от 6 мес до 3 лет</li>
+                                    <li>• Педагог ясельной группы</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> РГПУ им. Герцена. Квалификация педагог-психолог.</p>
+                            <p class="teacher-about">💝 <strong>О себе:</strong> Мама двухлетнего ребенка, с которым расту и развиваюсь каждый день. <strong>Принципы работы:</strong> Главное - любить детей, но еще главней, чтоб дети полюбили тебя! И, конечно же, ответственность за тех, с кем работаешь.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-card">
+                    <div class="teacher-photo">
+                        <div class="photo-placeholder">
+                            🎨
+                        </div>
+                    </div>
+                    <h4>Тришина Елена</h4>
+                    <p class="teacher-title">Педагог ИЗО</p>
+                    <div class="teacher-info-toggle">
+                        <button class="info-btn">Подробнее о педагоге</button>
+                        <div class="teacher-info-content">
+                            <div class="teacher-specialization">
+                                <h5>🖌️ Направления работы:</h5>
+                                <ul>
+                                    <li>• Студия рисования и лепки</li>
+                                    <li>• Творческие мастерские</li>
+                                    <li>• Развитие художественного вкуса</li>
+                                </ul>
+                            </div>
+                            <p class="teacher-education">🎓 <strong>Образование:</strong> Санкт-Петербургский государственный академический лицей им.Иогансона российской академии художеств, ВУЗ: Санкт-Петербургская государственная промышленная академия им. Барона Штиглица, факультет дизайн. Педагогический стаж более 15 лет.</p>
+                            <p class="teacher-about">🎭 <strong>Принципы работы:</strong> Мир, в котором мы живём, разнообразен и прекрасен. То, как человек воспринимает этот мир, каким он его видит, невозможно описать словами. Слов конечное количество, а образов бесконечное множество.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="schedule" class="schedule">
+        <div class="container">
+            <div class="section-header">
+                <h2>Расписание занятий</h2>
+                <p>Подробное расписание всех программ по дням недели</p>
+            </div>
+            
+            <div class="schedule-tabs">
+                <button class="schedule-tab active" data-age="all">Все возрасты</button>
+                <button class="schedule-tab" data-age="6m-2y">6 мес - 2 года</button>
+                <button class="schedule-tab" data-age="2y-3y">2 года - 3 года</button>
+                <button class="schedule-tab" data-age="3y-4y">3 года - 4 года</button>
+                <button class="schedule-tab" data-age="4y-7y">4 года - 7 лет</button>
+            </div>
+
+            <div class="schedule-grid">
+                <div class="schedule-day">
+                    <h3>Понедельник</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="6m-2y">
+                            <span class="time">09:00 - 10:00</span>
+                            <span class="program">Развивающие занятия (6 мес - 2 года)</span>
+                            <span class="teacher">Демидова Ю.М.</span>
+                        </div>
+                        <div class="schedule-item" data-age="2y-3y">
+                            <span class="time">10:30 - 11:30</span>
+                            <span class="program">Адаптационная группа</span>
+                            <span class="teacher">Томашева Е.И.</span>
+                        </div>
+                        <div class="schedule-item" data-age="3y-4y">
+                            <span class="time">16:00 - 17:00</span>
+                            <span class="program">"Азбука малышка"</span>
+                            <span class="teacher">Демидова Ю.М.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">17:30 - 18:30</span>
+                            <span class="program">Подготовка к школе</span>
+                            <span class="teacher">Штерн К.А.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-day">
+                    <h3>Вторник</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="2y-3y">
+                            <span class="time">09:30 - 10:30</span>
+                            <span class="program">Студия рисования и лепки</span>
+                            <span class="teacher">Тришина Е.</span>
+                        </div>
+                        <div class="schedule-item" data-age="3y-4y">
+                            <span class="time">11:00 - 12:00</span>
+                            <span class="program">Песочная терапия</span>
+                            <span class="teacher">Ольнева А.В.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">16:30 - 17:30</span>
+                            <span class="program">Английский язык</span>
+                            <span class="teacher">Берёзко Н.Ю.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">18:00 - 19:00</span>
+                            <span class="program">Музыкальный театр</span>
+                            <span class="teacher">Ольнева А.В.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-day">
+                    <h3>Среда</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="2y-3y">
+                            <span class="time">10:00 - 11:00</span>
+                            <span class="program">Ритмика</span>
+                            <span class="teacher">Ольнева А.В.</span>
+                        </div>
+                        <div class="schedule-item" data-age="3y-4y">
+                            <span class="time">11:30 - 12:30</span>
+                            <span class="program">Лечебная физкультура</span>
+                            <span class="teacher">Шкеул-Сергеева И.В.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">16:00 - 17:00</span>
+                            <span class="program">ЛФК на фитболах</span>
+                            <span class="teacher">Шкеул-Сергеева И.В.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">17:30 - 18:30</span>
+                            <span class="program">Робототехника</span>
+                            <span class="teacher">Педагог</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-day">
+                    <h3>Четверг</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="3y-4y">
+                            <span class="time">09:00 - 10:00</span>
+                            <span class="program">Английский язык</span>
+                            <span class="teacher">Берёзко Н.Ю.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">16:00 - 17:00</span>
+                            <span class="program">Хореография</span>
+                            <span class="teacher">Педагог</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">17:30 - 18:30</span>
+                            <span class="program">Кёкусинкай каратэ</span>
+                            <span class="teacher">Шкеул-Сергеева И.В.</span>
+                        </div>
+                        <div class="schedule-item" data-age="all">
+                            <span class="time">19:00 - 20:00</span>
+                            <span class="program">Индивидуальные занятия с логопедом</span>
+                            <span class="teacher">Федоренко Ю.В.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-day">
+                    <h3>Пятница</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="6m-2y">
+                            <span class="time">10:00 - 11:00</span>
+                            <span class="program">Развивающие занятия</span>
+                            <span class="teacher">Демидова Ю.М.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">16:00 - 17:00</span>
+                            <span class="program">Творческая мастерская</span>
+                            <span class="teacher">Тришина Е.</span>
+                        </div>
+                        <div class="schedule-item" data-age="4y-7y">
+                            <span class="time">17:30 - 18:30</span>
+                            <span class="program">Занимательная математика</span>
+                            <span class="teacher">Штерн К.А.</span>
+                        </div>
+                        <div class="schedule-item" data-age="all">
+                            <span class="time">15:00 - 19:00</span>
+                            <span class="program">Кратковременное пребывание</span>
+                            <span class="teacher">Томашева Е.И.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-day weekend">
+                    <h3>Выходные</h3>
+                    <div class="schedule-items">
+                        <div class="schedule-item" data-age="all">
+                            <span class="time">По записи</span>
+                            <span class="program">Праздничные мероприятия</span>
+                            <span class="teacher">Все педагоги</span>
+                        </div>
+                        <div class="schedule-item" data-age="all">
+                            <span class="time">По записи</span>
+                            <span class="program">Индивидуальные консультации</span>
+                            <span class="teacher">По запросу</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schedule-note">
+                <div class="note-icon"><i class="fas fa-sticky-note"></i></div>
+                <div class="note-content">
+                    <h4>Важная информация</h4>
+                    <p>Расписание может изменяться в зависимости от праздничных дней и особых мероприятий. Пожалуйста, уточняйте актуальное расписание по телефону или при личном визите.</p>
+                    <p><strong>Продолжительность занятий:</strong> 45-60 минут в зависимости от возраста детей.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2>Галерея наших малышей</h2>
+                <p>Посмотрите, как весело проходят наши занятия!</p>
+            </div>
+            
+            <div class="gallery-tabs">
+                <button class="gallery-tab active" data-category="all">Все фото</button>
+                <button class="gallery-tab" data-category="lessons">Занятия</button>
+                <button class="gallery-tab" data-category="creative">Творчество</button>
+                <button class="gallery-tab" data-category="events">Мероприятия</button>
+                <button class="gallery-tab" data-category="games">Игры</button>
+            </div>
+
+            <div class="gallery-grid">
+                <div class="gallery-item" data-category="lessons">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">📚</div>
+                        <p>Развивающие занятия</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="creative">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🎨</div>
+                        <p>Творческие мастерские</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="lessons">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🌍</div>
+                        <p>Английский язык</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="games">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🏖️</div>
+                        <p>Песочная терапия</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="events">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🎭</div>
+                        <p>Музыкальный театр</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="lessons">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🤖</div>
+                        <p>Робототехника</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="games">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">💃</div>
+                        <p>Хореография</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="creative">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🎵</div>
+                        <p>Музыкальные занятия</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="events">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🎉</div>
+                        <p>Праздничные мероприятия</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="lessons">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🧮</div>
+                        <p>Математика для малышей</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="games">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🥋</div>
+                        <p>Каратэ</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="creative">
+                    <div class="gallery-placeholder">
+                        <div class="placeholder-icon">🖌️</div>
+                        <p>Студия рисования</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-upload-info">
+                <div class="upload-icon"><i class="fas fa-upload"></i></div>
+                <div class="upload-content">
+                    <h4>Хотите добавить фото вашего ребенка?</h4>
+                    <p>Присылайте нам фотографии с занятий, и мы с радостью разместим их в нашей галерее!</p>
+                    <button class="btn btn-primary">Отправить фото</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Контакты и адрес</h2>
+                <p>Мы всегда рады помочь вам и ответить на ваши вопросы!</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="contact-details">
+                            <h4>Наш адрес</h4>
+                            <p>г. Санкт-Петербург<br>
+                            ул. Примерная, д. 1<br>
+                            метро "Площадь Ленина"</p>
+                            <a href="#" class="map-link">Посмотреть на карте</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div class="contact-details">
+                            <h4>Телефоны</h4>
+                            <p><a href="tel:+78123456789">+7 (812) 345-67-89</a><br>
+                            <a href="tel:+79123456789">+7 (912) 345-67-89</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p><a href="mailto:info@vparovozik.ru">info@vparovozik.ru</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                        <div class="contact-details">
+                            <h4>Режим работы</h4>
+                            <p><strong>Пн-Пт:</strong> 9:00-19:00<br>
+                            <strong>Сб:</strong> 10:00-16:00<br>
+                            <strong>Вс:</strong> выходной</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item social">
+                        <div class="contact-icon"><i class="fas fa-comments"></i></div>
+                        <div class="contact-details">
+                            <h4>Мы в соцсетях</h4>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-vk"></i> ВКонтакте</a>
+                                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+                                <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form-section">
+                    <div class="contact-form-container">
+                        <form class="contact-form">
+                            <h3>Записаться на пробное занятие</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" placeholder="Имя родителя" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Имя ребенка" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="tel" placeholder="Телефон" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <select required>
+                                    <option value="">Возраст ребенка</option>
+                                    <option value="6m-1y">6 месяцев - 1 год</option>
+                                    <option value="1y-2y">1 год - 2 года</option>
+                                    <option value="2y-3y">2 года - 3 года</option>
+                                    <option value="3y-4y">3 года - 4 года</option>
+                                    <option value="4y-5y">4 года - 5 лет</option>
+                                    <option value="5y-6y">5 лет - 6 лет</option>
+                                    <option value="6y-7y">6 лет - 7 лет</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select>
+                                    <option value="">Интересующая программа</option>
+                                    <option value="development">Развивающие занятия</option>
+                                    <option value="adaptation">Адаптационная группа</option>
+                                    <option value="sand">Песочная терапия</option>
+                                    <option value="english">Английский язык</option>
+                                    <option value="school">Подготовка к школе</option>
+                                    <option value="art">Творческие занятия</option>
+                                    <option value="music">Музыкальный театр</option>
+                                    <option value="sport">Физкультура</option>
+                                    <option value="logoped">Логопед</option>
+                                    <option value="short">Кратковременное пребывание</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <textarea placeholder="Дополнительные вопросы или пожелания"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                        </form>
+                    </div>
+
+                    <!-- Map placeholder -->
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            <div class="map-icon"><i class="fas fa-map"></i></div>
+                            <h4>Интерактивная карта</h4>
+                            <p>Здесь будет отображена карта с нашим местоположением</p>
+                            <button class="btn btn-outline">Открыть в картах</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <div class="train-logo">
+                            <!-- logo image/emoji removed for a cleaner look -->
+                        </div>
+                        <h3>Веселый Паровозик</h3>
+                    </div>
+                    <p>Клуб для детей и родителей</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Навигация</h4>
+                    <ul>
+                        <li><a href="#home">Главная</a></li>
+                        <li><a href="#programs">Программы</a></li>
+                        <li><a href="#teachers">Педагоги</a></li>
+                        <li><a href="#schedule">Расписание</a></li>
+                        <li><a href="#gallery">Галерея</a></li>
+                        <li><a href="#contact">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Программы</h4>
+                    <ul>
+                        <li><a href="#programs">Раннее развитие</a></li>
+                        <li><a href="#programs">Подготовка к школе</a></li>
+                        <li><a href="#programs">Творческие занятия</a></li>
+                        <li><a href="#programs">Английский язык</a></li>
+                        <li><a href="#programs">Музыкальный театр</a></li>
+                        <li><a href="#programs">Песочная терапия</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Контакты</h4>
+                    <p>г. Санкт-Петербург</p>
+                    <p>+7 (812) 345-67-89</p>
+                    <p>info@vparovozik.ru</p>
+                    <p>Пн-Пт: 9:00-19:00</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Мы будем рады видеть вас в нашем центре</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Ensure the train stays slightly to the right after its entrance animation
+        (function(){
+            var train = document.querySelector('.cute-train');
+            if(!train) return;
+            train.addEventListener('animationend', function(e){
+                if(e.animationName === 'train-in'){
+                    train.classList.add('animation-end');
+                }
+            });
+        })();
+    </script>
+    <script>
+        // Mobile menu toggle
+        (function(){
+            var btn = document.querySelector('.mobile-menu-btn');
+            var nav = document.querySelector('.nav');
+            if(!btn || !nav) return;
+            btn.setAttribute('aria-expanded','false');
+            btn.addEventListener('click', function(){
+                var open = nav.classList.toggle('open');
+                btn.setAttribute('aria-expanded', String(open));
+            });
+            // Close nav when clicking outside on mobile
+            document.addEventListener('click', function(e){
+                if(window.innerWidth > 700) return;
+                if(!nav.classList.contains('open')) return;
+                if(e.target === btn || nav.contains(e.target)) return;
+                nav.classList.remove('open');
+                btn.setAttribute('aria-expanded','false');
+            });
+        })();
+    </script>
+</body>
+</html>
